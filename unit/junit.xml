@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite errors="0" failures="2" hostname="DESKTOP-IO1U6E4" name="pytest" skipped="0" tests="13" time="0.212" timestamp="2019-12-25T08:41:56.820323"><testcase classname="unit.test_div_2.TestDiv" file="unit\test_div_2.py" line="18" name="test_int[100-10-10]" time="0.009"></testcase><testcase classname="unit.test_div_2.TestDiv" file="unit\test_div_2.py" line="18" name="test_int[0-100-0]" time="0.007"></testcase><testcase classname="unit.test_div_2.TestDiv" file="unit\test_div_2.py" line="18" name="test_int[999999999-3-333333333]" time="0.007"></testcase><testcase classname="unit.test_div_2.TestDiv" file="unit\test_div_2.py" line="26" name="test_float[7.7-1.1-7]" time="0.011"></testcase><testcase classname="unit.test_div_2.TestDiv" file="unit\test_div_2.py" line="26" name="test_float[0.5-10-0.05]" time="0.006"></testcase><testcase classname="unit.test_div_2.TestDiv" file="unit\test_div_2.py" line="26" name="test_float[10.05-5-2.01]" time="0.008"><failure message="assert 2.0100000000000002 == 2.01
+ +  where 2.0100000000000002 = div(10.05, 5)">self = &lt;unit.test_div_2.TestDiv object at 0x00000187E9C78F60&gt;, a = 10.05, b = 5, c = 2.01
+
+    @pytest.mark.parametrize(&quot;a, b, c&quot;, [
+        (7.7, 1.1, 7),
+        (0.5, 10, 0.05),
+        (10.05, 5, 2.01),
+        (10, 3, 3.333333),
+    ])
+    def test_float(self, a, b, c):
+&gt;       assert div(a, b) == c
+E       assert 2.0100000000000002 == 2.01
+E        +  where 2.0100000000000002 = div(10.05, 5)
+
+unit\test_div_2.py:34: AssertionError</failure></testcase><testcase classname="unit.test_div_2.TestDiv" file="unit\test_div_2.py" line="26" name="test_float[10-3-3.333333]" time="0.007"><failure message="assert 3.3333333333333335 == 3.333333
+ +  where 3.3333333333333335 = div(10, 3)">self = &lt;unit.test_div_2.TestDiv object at 0x00000187E9CA1128&gt;, a = 10, b = 3, c = 3.333333
+
+    @pytest.mark.parametrize(&quot;a, b, c&quot;, [
+        (7.7, 1.1, 7),
+        (0.5, 10, 0.05),
+        (10.05, 5, 2.01),
+        (10, 3, 3.333333),
+    ])
+    def test_float(self, a, b, c):
+&gt;       assert div(a, b) == c
+E       assert 3.3333333333333335 == 3.333333
+E        +  where 3.3333333333333335 = div(10, 3)
+
+unit\test_div_2.py:34: AssertionError</failure></testcase><testcase classname="unit.test_div_2.TestDiv" file="unit\test_div_2.py" line="35" name="test_zero" time="0.001"></testcase><testcase classname="unit.test_div_2.TestDiv" file="unit\test_div_2.py" line="39" name="test_null[-1]" time="0.006"></testcase><testcase classname="unit.test_div_2.TestDiv" file="unit\test_div_2.py" line="39" name="test_null[1-]" time="0.005"></testcase><testcase classname="unit.test_div_2.TestDiv" file="unit\test_div_2.py" line="47" name="test_string[0-1]" time="0.005"></testcase><testcase classname="unit.test_div_2.TestDiv" file="unit\test_div_2.py" line="47" name="test_string[66-11]" time="0.004"></testcase><testcase classname="unit.test_div_2.TestDiv" file="unit\test_div_2.py" line="47" name="test_string[10-10]" time="0.004"></testcase></testsuite></testsuites>
