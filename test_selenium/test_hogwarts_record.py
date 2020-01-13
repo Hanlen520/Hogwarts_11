@@ -27,4 +27,4 @@ class TestDefaultSuite():
         self.driver.find_element(By.LINK_TEXT, "社团").click()
         sleep(1)
         self.driver.find_element(By.LINK_TEXT, "霍格沃兹测试学院").click()
-        self.driver.find_element(By.XPATH, '//div/div/div[2]/div/a').click()  # 这一条没有执行，why？？？
+        self.driver.find_element(By.XPATH, '//div/div/div[2]/div/a').click()  # 定位符不对！获得的是一组元素
