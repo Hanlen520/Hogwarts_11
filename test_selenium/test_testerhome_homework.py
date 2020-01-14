@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 @Project : Hogwarts_11
-@File    : test_testerhome_1.py
+@File    : test_testerhome_homework.py
 @Time    : 2019-12-31  07:38:55
 @Author  : indeyo_lin
 @Version : 
@@ -37,3 +37,11 @@ class TestTesterhome:
         WebDriverWait(self.driver, 10).until(expected_conditions.element_to_be_clickable(element))
         self.driver.find_element(*element).click()
         self.driver.find_element(By.CSS_SELECTOR, ".panel-body>div:nth-child(1) .title").click()
+
+    def test_mtsc2020(self):
+        self.driver.find_element_by_partial_link_text('MTSC2020').click()
+        self.driver.find_element_by_css_selector('.toc-container>button').click()
+        element = (By.CSS_SELECTOR, '.list-container li:nth-child(4) a')
+        WebDriverWait(self.driver, 10).until(expected_conditions.element_to_be_clickable(element))  # 什么是定位符？一定是这样的元组格式吗？
+        self.driver.find_element(*element).click()
+
