@@ -6,14 +6,12 @@
 @Time    : 2020-02-11  15:32:39
 @Author  : indeyo_lin
 """
-from selenium import webdriver
 from selenium.webdriver.common.by import By
 
+from test_selenium.page.base_page import BasePage
 
-class RegisterPage:
 
-    def __init__(self, driver):
-        self.driver = driver
+class RegisterPage(BasePage):
 
     def register(self, corp_name):
         self.driver.find_element(By.ID, 'corp_name').send_keys(corp_name)
