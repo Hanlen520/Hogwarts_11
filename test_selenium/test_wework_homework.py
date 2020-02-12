@@ -42,5 +42,3 @@ class TestWeWork:
         self.driver.find_element(By.ID, "memberAdd_acctid").send_keys('Emma1')
         self.driver.find_element(By.ID, 'memberAdd_mail').send_keys('emma1@163.com')
         self.driver.find_element(By.LINK_TEXT, '保存并继续添加').click()  # 奇怪，页面有两个相同元素，居然不会报错？
-
-
