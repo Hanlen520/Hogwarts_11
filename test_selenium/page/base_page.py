@@ -14,12 +14,18 @@ from selenium.webdriver.remote.webdriver import WebDriver
 
 class BasePage:
 
-    def __init__(self, driver: WebDriver = None):  # 如果不确定driver类型，则无法调用他的方法
+    def __init__(self, driver: WebDriver = None, mode=None):  # 如果不确定driver类型，则无法调用他的方法
         if driver is None:
-            # 用于IndexPage进行初始化
-            self._driver = webdriver.Chrome()
-            self._driver.implicitly_wait(3)
+            if mode == "reuse":
+                options = webdriver.ChromeOptions()
+                # Chrome --remote-debugging-port=9222
+                options.debugger_address = "127.0.0.1:9222"  # 复用已有浏览器
+                self._driver = webdriver.Chrome(options=options)
+            else:
+                # 用于IndexPage进行初始化
+                self._driver = webdriver.Chrome()
 
+            self._driver.implicitly_wait(3)
             self._driver.get(self._base_url)
         else:
             # 用于RegisterPage、LoginPage等页面的引用
