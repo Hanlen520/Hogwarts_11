@@ -21,10 +21,10 @@ class TestIndex:
         # self.driver.find_element(By.ID, "iagree").click()
         # self.driver.find_element(By.ID, "submit_btn").click()
 
-        self.index.go_to_register().register("才华有限公司")
+        self.index.goto_register().register("才华有限公司")
 
     def test_login_register(self):
-        register_page = self.index.go_to_login().go_to_register().register("有钱花有限公司")
+        register_page = self.index.goto_login().goto_register().register("有钱花有限公司")
         assert "请填写" in "|".join(register_page.get_js_error_msg())
 
     def teardown(self):

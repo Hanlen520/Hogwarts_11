@@ -14,6 +14,6 @@ from test_selenium.page.register import RegisterPage
 
 class LoginPage(BasePage):
 
-    def go_to_register(self):
-        self._driver.find_element(By.LINK_TEXT, "企业注册").click()
+    def goto_register(self):
+        self.find(By.LINK_TEXT, "企业注册").click()
         return RegisterPage(self._driver)

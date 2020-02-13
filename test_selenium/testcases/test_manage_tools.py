@@ -17,7 +17,7 @@ class TestManageTools:
     def test_add_image(self):
         # PO作业一：
         # 管理工具 -> 素材库 -> 图片 -> 上传
-        image_page = self.manage_tools.go_to_material().go_to_image()
+        image_page = self.manage_tools.goto_material().goto_image()
         image_num_old = image_page.get_image_total()
         image_page.add_image("D:\\project\\Hogwarts_11\\test_selenium\\page\\beautiful_sky.png")
         image_num_new = image_page.get_image_total()

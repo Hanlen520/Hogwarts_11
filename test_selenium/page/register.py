@@ -14,9 +14,9 @@ from test_selenium.page.base_page import BasePage
 class RegisterPage(BasePage):
 
     def register(self, corp_name):
-        self._driver.find_element(By.ID, 'corp_name').send_keys(corp_name)
-        self._driver.find_element(By.ID, "iagree").click()
-        self._driver.find_element(By.ID, "submit_btn").click()
+        self.find(By.ID, 'corp_name').send_keys(corp_name)
+        self.find(By.ID, "iagree").click()
+        self.find(By.ID, "submit_btn").click()
         return self   # 返回 RegisterPage 页面对象本身
 
     def get_js_error_msg(self):
