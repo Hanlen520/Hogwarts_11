@@ -31,6 +31,13 @@ class BasePage:
             # 用于RegisterPage、LoginPage等页面的引用
             self._driver = driver
 
+    def find(self, by, locator=""):
+        if isinstance(by, tuple):
+            return self._driver.find_element(*by)
+        else:
+            return self._driver.find_element(by, locator)
+
+
     def close(self):
         sleep(20)
         self._driver.quit()
