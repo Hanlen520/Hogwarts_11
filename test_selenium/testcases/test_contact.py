@@ -9,8 +9,6 @@
 from time import time
 
 from test_selenium.page.contact import ContactPage
-from test_selenium.page.index import IndexPage
-from test_selenium.page.main import MainPage
 
 
 class TestContact:
