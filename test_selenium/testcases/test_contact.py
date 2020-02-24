@@ -17,7 +17,8 @@ class TestContact:
         self.contact = ContactPage(mode="reuse")
 
     def test_add_member(self):
-        # 先获取消息条数 n ，再取 id 属性为 2n-1 的消息，判断 text 中是否包含 姓名
+        # 作业2：添加用户
+        # 方法2：先获取消息条数 n ，再取 id 属性为 2n-1 的消息，判断 text 中是否包含 姓名
         name = "NO"+str(int(time()))
         self.contact.add_member(name, name, "13800000000")
         assert name in self.contact.goto_main().get_message()
