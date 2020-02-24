@@ -32,3 +32,15 @@ class ContactPage(BasePage):
         self._driver.execute_script("return location.reload()")
         sleep(3)
         return MainPage(self._driver)
+
+    def edit_member(self, english_name):
+        self.find(By.CSS_SELECTOR, '[title=Emma1]').click()
+        self.find(By.LINK_TEXT, '编辑').click()
+        edit_element = self.find(By.ID, 'memberEdit_english_name')
+        edit_element.clear()  # 清空原有内容
+        edit_element.send_keys(english_name)
+        self.find(By.LINK_TEXT, '保存').click()
+        return self
+
+    def get_english_name(self):
+        return self.find(By.CSS_SELECTOR, '.member_display_cover_detail_bottom').text

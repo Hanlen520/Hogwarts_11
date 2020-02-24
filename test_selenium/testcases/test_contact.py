@@ -24,7 +24,9 @@ class TestContact:
         assert name in self.contact.goto_main().get_message()
 
     def test_edit_member(self):
-        self.contact.edit_member()
+        english_name = 'emma_peng'
+        self.contact.edit_member(english_name)
+        assert english_name in self.contact.get_english_name()
 
     def test_goto_main(self):
         self.contact.goto_main()
