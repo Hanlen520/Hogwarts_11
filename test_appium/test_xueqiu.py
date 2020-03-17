@@ -84,11 +84,15 @@ class TestXueqiu:
         # 1. 假如没有添加成功，定位“followed_btn”的时候一定会报错
         # 2. 假如添加成功，但是按钮的text改变，也会断言失败
         # 所以最好的做法是：通过层级关系获取该按钮的父元素，再取子元素，再通过get_attribute获取resource-id属性，判断是否等于"followed_btn"。
+        # followed_button = self.driver.find_element(
+        #     By.XPATH,
+        #     '//*[@text="09988"]/../../..//*[contains(@resource-id,"add_attention")]//*[contains(@class,"TextView")]'
+        # )
+        # assert "followed_btn" in followed_button.get_attribute('resource-id')
+        # 受思寒大佬启发，直接用follow来定位按钮，这个定位方法简洁很多，学习了！
         followed_button = self.driver.find_element(
-            By.XPATH,
-            '//*[@text="09988"]/../../..//*[contains(@resource-id,"add_attention")]//*[contains(@class,"TextView")]'
-        )
-        assert "followed_btn" in followed_button.get_attribute('resource-id')
+            By.XPATH, '//*[@text="09988"]/../../..//*[contains(@resource-id,"follow")]')
+        assert "已添加" in followed_button.get_attribute('text')
 
     def test_scroll(self):
         size = self.driver.get_window_size()
