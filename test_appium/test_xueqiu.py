@@ -27,7 +27,7 @@ class TestXueqiu:
         caps["dontStopAppOnReset"] = True
 
         self.driver = webdriver.Remote("http://localhost:4723/wd/hub", caps)
-        self.driver.implicitly_wait(10)
+        self.driver.implicitly_wait(20)
 
     def test_search(self):
         # el1 = self.driver.find_element_by_id("com.xueqiu.android:id/tv_agree")
@@ -108,6 +108,15 @@ class TestXueqiu:
         # todo: lock函数这里报错了WebDriverException，看看是怎么回事
         self.driver.lock(5)
         # self.driver.unlock()
+
+    def test_uiselector(self):
+        scroll_to_element = (
+            MobileBy.ANDROID_UIAUTOMATOR,
+            'new UiScrollable('
+            'new UiSelector().scrollable(true).instance(0))'
+            '.scrollIntoView('
+            'new UiSelector().text("夏至1987").instance(0));')
+        self.driver.find_element(*scroll_to_element).click()
 
     def test_page_source(self):
         print(self.driver.page_source)
