@@ -32,6 +32,7 @@ class TestApiDemo:
             'new UiSelector().text("Views").instance(0));')
         self.driver.find_element(*scroll_to_element1).click()
 
+        # TODO: srcoll_to_text 可以封装一下
         scroll_to_element2 = (
             MobileBy.ANDROID_UIAUTOMATOR,
             'new UiScrollable('

@@ -25,6 +25,9 @@ class TestXueqiu:
         caps["appActivity"] = ".view.WelcomeActivityAlias"
         caps["noReset"] = True  # 设置以后不会清空数据，再次进入app不会有协议同意的弹框
         caps["dontStopAppOnReset"] = True
+        caps["chromedriverExecutable"] = "F:\chromedriver_win32_2.20\chromedriver.exe"
+        # Genymotion 模拟器的udid会变，尽量不写死，或者看看能不能给设备固定一个名字
+        # caps["udid"] = "192.168.210.101:5555"
 
         self.driver = webdriver.Remote("http://localhost:4723/wd/hub", caps)
         self.driver.implicitly_wait(20)
@@ -93,6 +96,53 @@ class TestXueqiu:
         followed_button = self.driver.find_element(
             By.XPATH, '//*[@text="09988"]/../../..//*[contains(@resource-id,"follow")]')
         assert "已添加" in followed_button.get_attribute('text')
+
+    def test_webview_native(self):
+        self.driver.find_element(By.XPATH, "//*[@text='交易' and contains(@resource-id, 'tab')]").click()
+        self.driver.find_element(MobileBy.ACCESSIBILITY_ID, "A股开户").click()
+        # self.driver.find_element(By.ID, "phone-number").send_keys("13800000000")
+        # self.driver.find_element(MobileBy.ID, "phone-number").send_keys("13800000000")
+        # self.driver.find_element(By.XPATH, "//*[@resource-id='phone-number']").send_keys("13800000000")
+        phone = (MobileBy.ACCESSIBILITY_ID, "输入11位手机号")
+        WebDriverWait(self.driver, 20).until(expected_conditions.element_to_be_clickable(phone))
+        # 用来判断页面元素是否加载完成
+        # print(self.driver.page_source)
+        # webview元素的text为空，因此获取不到元素内容，可通过get_attribute
+        print(self.driver.find_element(*phone).get_attribute("content-desc"))
+        sleep(5)
+        self.driver.find_element(*phone).send_keys("13686413302")
+        # todo:元素可以正常定位，但是无法sendkeys，用的mumu模拟器
+
+    def test_webview_context(self):
+        self.driver.find_element(By.XPATH, "//*[@text='交易' and contains(@resource-id, 'tab')]").click()
+        # 用于webview首次测试时调试
+        # for i in range(5):
+        #     print(self.driver.contexts)
+        #     sleep(1)
+        # print(self.driver.page_source)
+        # 看appium log，contexts请求了两次，因此把结果保存起来，加速一丢丢
+        contexts = self.driver.contexts
+        WebDriverWait(self.driver, 20).until(lambda x: len(contexts) > 1)
+        # 这里有时候报错：A new session could not be created. 的概率比较大，暂时找不到原因，只能重启模拟器
+        self.driver.switch_to.context(contexts[-1])
+        # print(self.driver.page_source)
+        # 当出现无论多长等待时间都无法定位到元素时，可以查看是否打开新窗口
+        # print(self.driver.window_handles)
+        create_account = (By.CSS_SELECTOR, ".trade_home_agu_3ki")
+        WebDriverWait(self.driver, 30).until(expected_conditions.element_to_be_clickable(create_account))
+        self.driver.find_element(*create_account).click()
+        # for i in range(5):
+        #     print(self.driver.window_handles)
+        #     sleep(1)
+        handles = self.driver.window_handles
+        self.driver.switch_to.window(handles[-1])
+        # print(self.driver.window_handles)
+        WebDriverWait(self.driver, 30).until(lambda x: len(handles) > 3)
+        # print(self.driver.window_handles)
+        # print(self.driver.page_source)
+        phone_number = (By.ID, "phone-number")
+        WebDriverWait(self.driver, 30).until(expected_conditions.visibility_of_element_located(phone_number))
+        self.driver.find_element(*phone_number).send_keys("13800000000")
 
     def test_scroll(self):
         size = self.driver.get_window_size()
