@@ -24,7 +24,8 @@ class TestXueqiu:
         caps["appPackage"] = "com.xueqiu.android"
         caps["appActivity"] = ".view.WelcomeActivityAlias"
         caps["noReset"] = True  # 设置以后不会清空数据，再次进入app不会有协议同意的弹框
-        caps["dontStopAppOnReset"] = True
+        caps["dontStopAppOnReset"] = True  # True则不会重启app
+        caps["skipDeviceInitialization"] = True
         caps["chromedriverExecutable"] = "F:\chromedriver_win32_2.20\chromedriver.exe"
         # Genymotion 模拟器的udid会变，尽量不写死，或者看看能不能给设备固定一个名字
         # caps["udid"] = "192.168.210.101:5555"
@@ -115,22 +116,26 @@ class TestXueqiu:
 
     def test_webview_context(self):
         self.driver.find_element(By.XPATH, "//*[@text='交易' and contains(@resource-id, 'tab')]").click()
-        # 用于webview首次测试时调试
+
+        # 用于webview首次测试时调试，分析上下文
         # for i in range(5):
         #     print(self.driver.contexts)
         #     sleep(1)
         # print(self.driver.page_source)
+
         # 看appium log，contexts请求了两次，因此把结果保存起来，加速一丢丢
         contexts = self.driver.contexts
         WebDriverWait(self.driver, 20).until(lambda x: len(contexts) > 1)
         # 这里有时候报错：A new session could not be created. 的概率比较大，暂时找不到原因，只能重启模拟器
         self.driver.switch_to.context(contexts[-1])
+
         # print(self.driver.page_source)
-        # 当出现无论多长等待时间都无法定位到元素时，可以查看是否打开新窗口
-        # print(self.driver.window_handles)
         create_account = (By.CSS_SELECTOR, ".trade_home_agu_3ki")
         WebDriverWait(self.driver, 30).until(expected_conditions.element_to_be_clickable(create_account))
         self.driver.find_element(*create_account).click()
+
+        # 当出现无论多长等待时间都无法定位到元素时，可以查看是否打开新窗口
+        # print(self.driver.window_handles)
         # for i in range(5):
         #     print(self.driver.window_handles)
         #     sleep(1)
@@ -140,8 +145,11 @@ class TestXueqiu:
         WebDriverWait(self.driver, 30).until(lambda x: len(handles) > 3)
         # print(self.driver.window_handles)
         # print(self.driver.page_source)
+
         phone_number = (By.ID, "phone-number")
-        WebDriverWait(self.driver, 30).until(expected_conditions.visibility_of_element_located(phone_number))
+        # html页面定位元素，页面出现，但不代表元素可以被交互，因此需要显示等待
+        # WebDriverWait(self.driver, 30).until(expected_conditions.visibility_of_element_located(phone_number))
+        WebDriverWait(self.driver, 30).until(expected_conditions.presence_of_element_located(phone_number))
         self.driver.find_element(*phone_number).send_keys("13800000000")
 
     def test_scroll(self):
@@ -160,16 +168,23 @@ class TestXueqiu:
         # self.driver.unlock()
 
     def test_uiselector(self):
+        # 在mumu模拟器上，会向下拉一下，再向上滑动，找元素直到超时。但是在Genymotion模拟器上，向上向下再向上就报错了
         scroll_to_element = (
             MobileBy.ANDROID_UIAUTOMATOR,
             'new UiScrollable('
             'new UiSelector().scrollable(true).instance(0))'
             '.scrollIntoView('
-            'new UiSelector().text("夏至1987").instance(0));')
+            'new UiSelector().text("9小时前").instance(0));')
         self.driver.find_element(*scroll_to_element).click()
 
     def test_page_source(self):
         print(self.driver.page_source)
+
+    def test_performance(self):
+        # 获取性能数据，不过一般不会通过自动化获取性能数据
+        print(self.driver.get_performance_data_types())
+        for p in self.driver.get_performance_data_types():
+            print(p, self.driver.get_performance_data("com.xueqiu.android", p, 10))
 
     def teardown(self):
         sleep(20)
