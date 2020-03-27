@@ -186,6 +186,46 @@ class TestXueqiu:
         for p in self.driver.get_performance_data_types():
             print(p, self.driver.get_performance_data("com.xueqiu.android", p, 10))
 
+    def test_record(self):
+        # 录屏文件pull到了电脑端，但是又执行了删除命令
+        self.driver.start_recording_screen()
+        self.driver.find_element(By.XPATH, "//*[@text='交易' and contains(@resource-id, 'tab')]").click()
+        # 看appium log，contexts请求了两次，因此把结果保存起来，加速一丢丢
+        contexts = self.driver.contexts
+        WebDriverWait(self.driver, 20).until(lambda x: len(contexts) > 1)
+        # 这里有时候报错：A new session could not be created. 的概率比较大，暂时找不到原因，只能重启模拟器
+        self.driver.switch_to.context(contexts[-1])
+
+        # print(self.driver.page_source)
+        create_account = (By.CSS_SELECTOR, ".trade_home_agu_3ki")
+        WebDriverWait(self.driver, 30).until(expected_conditions.element_to_be_clickable(create_account))
+        self.driver.find_element(*create_account).click()
+
+        handles = self.driver.window_handles
+        self.driver.switch_to.window(handles[-1])
+        # print(self.driver.window_handles)
+        WebDriverWait(self.driver, 30).until(lambda x: len(handles) > 3)
+        # print(self.driver.window_handles)
+        # print(self.driver.page_source)
+
+        phone_number = (By.ID, "phone-number")
+        # html页面定位元素，页面出现，但不代表元素可以被交互，因此需要显示等待
+        # WebDriverWait(self.driver, 30).until(expected_conditions.visibility_of_element_located(phone_number))
+        WebDriverWait(self.driver, 30).until(expected_conditions.presence_of_element_located(phone_number))
+        self.driver.find_element(*phone_number).send_keys("13800000000")
+
+        self.driver.stop_recording_screen()
+
+    def test_script(self):
+        # appium 服务端要开启一个安全开关 --relaxed-security
+        result = self.driver.execute_script('mobile: shell', {
+            'command': 'pm list package',
+            'args': [],
+            'includeStderr': True,
+            'timeout': 5000
+        })
+        print(result)
+
     def teardown(self):
         sleep(20)
         # self.driver.quit()
