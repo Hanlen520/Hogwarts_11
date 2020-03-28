@@ -24,8 +24,9 @@ class TestXueqiu:
         caps["appPackage"] = "com.xueqiu.android"
         caps["appActivity"] = ".view.WelcomeActivityAlias"
         caps["noReset"] = True  # 设置以后不会清空数据，再次进入app不会有协议同意的弹框
-        caps["dontStopAppOnReset"] = True  # True则不会重启app
-        caps["skipDeviceInitialization"] = True
+        # caps["dontStopAppOnReset"] = True  # True则不会重启app
+        # caps["skipDeviceInitialization"] = True
+        # webview测试，需要chromedriver和chrome版本匹配
         caps["chromedriverExecutable"] = "F:\chromedriver_win32_2.20\chromedriver.exe"
         # Genymotion 模拟器的udid会变，尽量不写死，或者看看能不能给设备固定一个名字
         # caps["udid"] = "192.168.210.101:5555"
@@ -225,6 +226,49 @@ class TestXueqiu:
             'timeout': 5000
         })
         print(result)
+
+    def test_open_stock_account(self):
+        """
+        20200223 作业1
+        港美股开户
+        输入手机号与错误的验证码 1234,点击开户,切换回原生,点击关闭回到交易页
+        :return:
+        """
+        self.driver.find_element(By.XPATH, "//*[@text='交易' and contains(@resource-id, 'tab_name')]").click()
+        self.driver.find_element(By.XPATH, "//*[@text='沪深']").click()
+        WebDriverWait(self.driver, 60).until(lambda x: len(self.driver.contexts) > 1)
+        # 这里时不时报错chromedriver session未连接，头疼。。除了noreset，其他加速开关关了就不出现了
+        self.driver.switch_to.context(self.driver.contexts[-1])
+        # webview 获取页面元素，测试用
+        # print(self.driver.page_source)
+
+        # print(self.driver.window_handles)
+        stock = (By.CSS_SELECTOR, ".trade_home_xueying_SJY")
+        WebDriverWait(self.driver, 60).until(expected_conditions.element_to_be_clickable(stock))
+        self.driver.find_element(*stock).click()
+
+        self.driver.switch_to.window(self.driver.window_handles[-1])
+        # print(self.driver.page_source)
+        phone = (By.CSS_SELECTOR, "[placeholder='请输入手机号']")
+        WebDriverWait(self.driver, 60).until(expected_conditions.visibility_of_element_located(phone))
+        self.driver.find_element(*phone).send_keys("13800000000")
+        verify_code = (By.CSS_SELECTOR, "[placeholder='请输入验证码']")
+        WebDriverWait(self.driver, 60).until(expected_conditions.visibility_of_element_located(verify_code))
+        self.driver.find_element(*verify_code).send_keys("1234")
+
+        # print(self.driver.page_source)
+        # submit = (By.CLASS_NAME, "open_form-submit_3fn")
+        # submit = (By.LINK_TEXT, "立即开户")
+        submit = (By.CSS_SELECTOR, ".open_form-submit_1Ms")
+        # 这里超时了，上面三种定位方式都试过了，不行。现在可以了！！类名居然变了，也是醉了，后面的字符串该不会是随机生成的？
+        WebDriverWait(self.driver, 60).until(expected_conditions.element_to_be_clickable(submit))
+        self.driver.find_element(*submit).click()
+        assert "请输入正确的验证码！" in self.driver.find_element(By.CSS_SELECTOR, ".Toast_toast_22U").text
+
+        # print(self.driver.contexts)
+        self.driver.switch_to.context(self.driver.contexts[0])
+        self.driver.find_element(By.XPATH, "//*[contains(@resource-id, 'action_bar_close')]").click()
+
 
     def teardown(self):
         sleep(20)
