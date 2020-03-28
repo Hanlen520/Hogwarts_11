@@ -24,6 +24,7 @@ class TestXueqiu:
         caps["appPackage"] = "com.xueqiu.android"
         caps["appActivity"] = ".view.WelcomeActivityAlias"
         caps["noReset"] = True  # 设置以后不会清空数据，再次进入app不会有协议同意的弹框
+        # 暂时注释掉下面两个加速器，为了避免出现A new session could not be created.这个问题
         # caps["dontStopAppOnReset"] = True  # True则不会重启app
         # caps["skipDeviceInitialization"] = True
         # webview测试，需要chromedriver和chrome版本匹配
@@ -236,19 +237,29 @@ class TestXueqiu:
         """
         self.driver.find_element(By.XPATH, "//*[@text='交易' and contains(@resource-id, 'tab_name')]").click()
         self.driver.find_element(By.XPATH, "//*[@text='沪深']").click()
+
+        # 等待webview完全出现
         WebDriverWait(self.driver, 60).until(lambda x: len(self.driver.contexts) > 1)
         # 这里时不时报错chromedriver session未连接，头疼。。除了noreset，其他加速开关关了就不出现了
+        # 原生切换到webview，才能在app内用css selector来定位元素
         self.driver.switch_to.context(self.driver.contexts[-1])
         # webview 获取页面元素，测试用
         # print(self.driver.page_source)
 
         # print(self.driver.window_handles)
+        # 欧美股开户入口
         stock = (By.CSS_SELECTOR, ".trade_home_xueying_SJY")
+        # web页面元素渲染需要时间，所以加上显示等待
         WebDriverWait(self.driver, 60).until(expected_conditions.element_to_be_clickable(stock))
         self.driver.find_element(*stock).click()
 
-        self.driver.switch_to.window(self.driver.window_handles[-1])
+        # print(self.driver.window_handles)
+        # 可以判断是否打开新页面
         # print(self.driver.page_source)
+        # 点击欧美股开户，进入了一个新页面，需要切换句柄。新句柄生成需要时间，加上显示等待
+        WebDriverWait(self.driver, 60).until(lambda x: len(self.driver.window_handles) > 3)
+        self.driver.switch_to.window(self.driver.window_handles[-1])
+
         phone = (By.CSS_SELECTOR, "[placeholder='请输入手机号']")
         WebDriverWait(self.driver, 60).until(expected_conditions.visibility_of_element_located(phone))
         self.driver.find_element(*phone).send_keys("13800000000")
@@ -260,7 +271,7 @@ class TestXueqiu:
         # submit = (By.CLASS_NAME, "open_form-submit_3fn")
         # submit = (By.LINK_TEXT, "立即开户")
         submit = (By.CSS_SELECTOR, ".open_form-submit_1Ms")
-        # 这里超时了，上面三种定位方式都试过了，不行。现在可以了！！类名居然变了，也是醉了，后面的字符串该不会是随机生成的？
+        # 这里超时了，上面三种定位方式都试过了，不行。现在可以了！！类名居然变了，也是醉了，后面的字符串该不会是随机生成的？希望不是
         WebDriverWait(self.driver, 60).until(expected_conditions.element_to_be_clickable(submit))
         self.driver.find_element(*submit).click()
         assert "请输入正确的验证码！" in self.driver.find_element(By.CSS_SELECTOR, ".Toast_toast_22U").text
@@ -268,7 +279,6 @@ class TestXueqiu:
         # print(self.driver.contexts)
         self.driver.switch_to.context(self.driver.contexts[0])
         self.driver.find_element(By.XPATH, "//*[contains(@resource-id, 'action_bar_close')]").click()
-
 
     def teardown(self):
         sleep(20)
