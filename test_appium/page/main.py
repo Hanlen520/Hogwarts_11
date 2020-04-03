@@ -14,7 +14,7 @@ from test_appium.page.search import SearchPage
 
 
 class MainPage(BasePage):
-    _search_locator=(MobileBy.ID, "tv_search")
+    _search_locator = (MobileBy.ID, "tv_search")
 
     def goto_search(self):
         self.find(self._search_locator).click()
@@ -29,4 +29,3 @@ class MainPage(BasePage):
 
     def goto_profile(self):
         pass
-
