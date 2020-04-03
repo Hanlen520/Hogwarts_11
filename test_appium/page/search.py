@@ -17,12 +17,13 @@ class SearchPage(BasePage):
     _search_locator = (MobileBy.ID, "search_input_text")
     _stock_locator = (MobileBy.ID, "name")
     _add_locator = (By.XPATH, '//*[@text="加自选"]')
-    _followed_locator = (By.ID, "followed_btn")
+    _follow_locator = (By.XPATH, "//*[contains(@resource-id, 'follow')]")
+    _close_locator = (By.ID, "action_close")
 
     def search(self, key: str):
         self.find(*self._search_locator).send_keys(key)
         # 奇怪，这里少了一步，业务逻辑改变了？？
-        # self.find(*self._stock_locator).click()
+        self.find(*self._stock_locator).click()
         return self
 
     def get_price(self, key: str) -> float:
@@ -31,8 +32,19 @@ class SearchPage(BasePage):
         return float(self.find(*price_element).text)
 
     def add_stock(self):
-        self.find(self._add_locator).click()
+        # self.find(self._add_locator).click()
+        # 进一步封装driver函数
+        self.find_by_text('加自选').click()
         return self
 
     def get_msg(self):
-        return self.find(self._followed_locator).text
+        return self.find_and_get_text(self._follow_locator)
+
+    def close(self):
+        self.find(self._close_locator).click()
+
+    def check_if_selected(self):
+        # done:取消已自选股票，清理脏数据
+        if "已添加" in self.get_msg():
+            self.find(self._follow_locator).click()
+        return self

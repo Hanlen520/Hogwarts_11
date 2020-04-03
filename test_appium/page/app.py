@@ -26,9 +26,9 @@ class App(BasePage):
             # 类变量可以给所有实例对象调用
             caps["appPackage"] = self._appPackage
             caps["appActivity"] = self._appActivity
-            caps["noReset"] = True  # 设置以后不会清空数据，再次进入app不会有协议同意的弹框
+            # caps["noReset"] = True  # 设置以后不会清空数据，再次进入app不会有协议同意的弹框
             # 暂时注释掉下面两个加速器，为了避免出现A new session could not be created.这个问题
-            caps["dontStopAppOnReset"] = True  # True则不会重启app
+            # caps["dontStopAppOnReset"] = True  # True则不会重启app
             # caps["skipDeviceInitialization"] = True
             # webview测试，需要chromedriver和chrome版本匹配
             caps["chromedriverExecutable"] = "F:\chromedriver_win32_2.20\chromedriver.exe"
@@ -41,7 +41,8 @@ class App(BasePage):
             # 如果app启动过，则只需要重启app，而不需要重启appium整个流程，节约时间
             self._driver.start_activity(self._appPackage, self._appActivity)
 
-            # todo: 为什么不直接return MainPage()呢？？
+            # done: 为什么不直接return MainPage()呢？？
+            # 其实也可以，把对首页加载判断放在start()也是可以的
             # return MainPage(self._driver)
         return self
 
@@ -54,6 +55,11 @@ class App(BasePage):
             # 如果页面出现tab我的，则说明首页加载完成
             if '我的' in source:
                 return True
+            if '同意' in source:
+                return True
+            if '更新' in source:
+                return True
+            return False
 
         # 传入函数名，运行时调用
         WebDriverWait(self._driver, 60).until(wait_load)

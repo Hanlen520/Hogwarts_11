@@ -7,6 +7,7 @@
 @Author  : indeyo_lin
 """
 
+
 class ProfilePage:
     def login_by_password(self):
         pass
