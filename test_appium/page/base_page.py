@@ -45,7 +45,7 @@ class BasePage:
         # done：显示等待有点尴尬，不知道放哪里比较好。
         #  放在find_element前面，出现弹窗的时候，异常处理拦截不到直接超时异常了
         #  放在后面，真正需要用到显示等待的时候，被异常处理拦截
-        # 这个问题解决了！原来问题在于异常处理函数没写对，异常处理完不应该返回函数本身，而是要返回
+        # 这个问题解决了！原来问题在于异常处理函数没写对，异常处理完不应该返回函数本身，而是要返回magic()
         WebDriverWait(self._driver, 10).until(expected_conditions.visibility_of_element_located(locator))
         element = self._driver.find_element(*locator)
         return element

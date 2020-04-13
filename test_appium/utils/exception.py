@@ -13,6 +13,7 @@ logging.basicConfig(level=logging.INFO)
 
 def exception_handle(func):
     def magic(*args, **kwargs):
+        # 防止循环调用报错
         from test_appium.page.base_page import BasePage
         # 获取BasePage实例对象的参数self，这样可以复用driver
         _self: BasePage = args[0]
@@ -20,7 +21,7 @@ def exception_handle(func):
             # logging.info('error count is %s' % _self._error_count)
             result = func(*args, **kwargs)
             _self._error_count = 0
-            # 返回调用函数本身，要不然返回值会被装饰器吃掉
+            # 返回调用函数的执行结果，要不然返回值会被装饰器吃掉
             return result
         # 弹窗等异常处理逻辑
         except Exception as e:
@@ -41,5 +42,4 @@ def exception_handle(func):
             # 弹窗也没有出现，则抛出异常
             logging.warning("no error is found")
             raise e
-
     return magic

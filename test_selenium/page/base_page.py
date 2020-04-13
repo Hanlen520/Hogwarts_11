@@ -13,6 +13,7 @@ from selenium.webdriver.remote.webdriver import WebDriver
 
 
 class BasePage:
+    _base_url = ""
 
     def __init__(self, driver: WebDriver = None, mode=None):  # 如果不确定driver类型，则无法调用他的方法
         if driver is None:
